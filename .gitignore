@@ -1,0 +1,92 @@
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/gradle.xml
+.idea/compiler.xml
+.idea/deploymentTargetDropDown.xml
+.idea/deploymentTargetSelector.xml
+.idea/misc.xml
+.idea/other.xml
+.idea/jarRepositories.xml
+.idea/discord.xml
+.idea/firebender/
+.idea/*.iml
+
+# macOS
+.DS_Store
+
+# Native build files
+.externalNativeBuild/
+.cxx/
+
+# Captures folder
+captures/
+
+# Built application files
+*.apk
+*.ap_
+*.aab
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
+# Gradle wrapper jar (usually should be committed, but some teams exclude it)
+# gradle/wrapper/gradle-wrapper.jar
+
+# Keystore files (IMPORTANT - never commit these!)
+*.jks
+*.keystore
+*.p12
+*.key
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+
+# Firebase Crashlytics
+fabric.properties
+
+# Version control
+*.orig
+
+# Log files
+*.log
+
+# Android Studio Navigation editor temp files
+.navigation/
+
+# Android Studio captures folder
+captures/
+
+# IntelliJ
+*.ipr
+*.iws
+
+# Windows thumbnail db
+Thumbs.db
+
+# Windows folder config file
+Desktop.ini
+
+# Windows shortcuts
+*.lnk

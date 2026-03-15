@@ -1,0 +1,45 @@
+# Build outputs
+/build/
+
+# Generated files
+/generated/
+
+# Proguard output
+/proguard/
+
+# Local test reports
+/reports/
+
+# Intermediate files
+/intermediates/
+
+# APK outputs
+/outputs/apk/
+/outputs/bundle/
+
+# Native libs
+/jniLibs/
+
+# Compiled code
+/classes/
+
+# Manifest outputs
+/manifests/
+
+# Merged assets
+/merged_assets/
+
+# Merged resources
+/merged_res/
+
+# Merged native libs
+/merged_native_libs/
+
+# Stripped native libs
+/stripped_native_libs/
+
+# Packaged res
+/packaged_res/
+
+# Packaged manifests
+/packaged_manifests/
