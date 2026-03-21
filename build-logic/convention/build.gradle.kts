@@ -14,3 +14,12 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
 }
+
+gradlePlugin {
+    plugins {
+        register("androidFeature") {
+            id = "shopscale.android.feature"
+            implementationClass = "com.shopscale.buildlogic.AndroidFeatureConventionPlugin"
+        }
+    }
+}
