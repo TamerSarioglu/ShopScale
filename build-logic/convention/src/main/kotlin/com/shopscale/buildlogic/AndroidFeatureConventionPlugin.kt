@@ -1,5 +1,6 @@
 package com.shopscale.buildlogic
 
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
@@ -17,7 +18,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 apply("com.google.devtools.ksp")
             }
 
-            extensions.configure<com.android.build.api.dsl.LibraryExtension> {
+            extensions.configure<LibraryExtension> {
                 compileSdk = 36
 
                 defaultConfig {
@@ -36,11 +37,11 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 // Hilt DI
                 add("implementation", libs.findLibrary("hilt.android").get())
                 add("ksp", libs.findLibrary("hilt.compiler").get())
-                
+
                 // 🚨 ARCHITECTURE RULE: 
                 // We inject Hilt Navigation Compose ONLY in feature modules.
                 // Pure UI modules (like :core:designsystem) should never know about Navigation!
-                add("implementation", libs.findLibrary("androidx.hilt.navigation.compose").get()) 
+                add("implementation", libs.findLibrary("androidx.hilt.navigation.compose").get())
             }
         }
     }
