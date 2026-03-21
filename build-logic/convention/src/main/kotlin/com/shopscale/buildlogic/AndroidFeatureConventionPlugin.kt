@@ -30,17 +30,10 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             dependencies {
-                // Inject the entire Compose UI bundle
                 add("implementation", libs.findBundle("compose").get())
                 add("implementation", libs.findLibrary("kotlinx.coroutines.android").get())
-
-                // Hilt DI
                 add("implementation", libs.findLibrary("hilt.android").get())
                 add("ksp", libs.findLibrary("hilt.compiler").get())
-
-                // 🚨 ARCHITECTURE RULE: 
-                // We inject Hilt Navigation Compose ONLY in feature modules.
-                // Pure UI modules (like :core:designsystem) should never know about Navigation!
                 add("implementation", libs.findLibrary("androidx.hilt.navigation.compose").get())
             }
         }

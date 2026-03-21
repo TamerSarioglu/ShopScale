@@ -10,9 +10,11 @@ java {
 }
 
 dependencies {
-    compileOnly(libs.android.gradlePlugin)
-    compileOnly(libs.kotlin.gradlePlugin)
-    compileOnly(libs.ksp.gradlePlugin)
+    implementation(libs.android.gradlePlugin)
+    implementation(libs.kotlin.gradlePlugin)
+    implementation(libs.ksp.gradlePlugin)
+    implementation(libs.hilt.gradlePlugin)
+    implementation(libs.compose.gradlePlugin)
 }
 
 gradlePlugin {
@@ -20,6 +22,10 @@ gradlePlugin {
         register("androidFeature") {
             id = "shopscale.android.feature"
             implementationClass = "com.shopscale.buildlogic.AndroidFeatureConventionPlugin"
+        }
+        register("androidApplication") {
+            id = "shopscale.android.application"
+            implementationClass = "com.shopscale.buildlogic.AndroidApplicationConventionPlugin"
         }
     }
 }
