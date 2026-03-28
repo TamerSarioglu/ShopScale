@@ -27,3 +27,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ShopScale"
 include(":app")
+include(":core:network")

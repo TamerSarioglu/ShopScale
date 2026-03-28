@@ -19,6 +19,10 @@ dependencies {
 
 gradlePlugin {
     plugins {
+        register("androidLibrary") {
+            id = "shopscale.android.library"
+            implementationClass = "com.shopscale.buildlogic.AndroidLibraryConventionPlugin"
+        }
         register("androidFeature") {
             id = "shopscale.android.feature"
             implementationClass = "com.shopscale.buildlogic.AndroidFeatureConventionPlugin"
