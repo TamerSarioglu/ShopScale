@@ -39,10 +39,12 @@ class ShopScaleAuthenticator @Inject constructor(
                     "Token refreshed successfully! Retrying original request."
                 )
 
-                tokenManager.saveTokens(
-                    access = newTokenResponse.accessToken,
-                    refresh = newTokenResponse.refreshToken
-                )
+                runBlocking {
+                    tokenManager.saveTokens(
+                        access = newTokenResponse.accessToken,
+                        refresh = newTokenResponse.refreshToken
+                    )
+                }
 
                 response.request.newBuilder()
                     .header("Authorization", "Bearer ${newTokenResponse.accessToken}")
@@ -50,7 +52,7 @@ class ShopScaleAuthenticator @Inject constructor(
 
             } catch (e: Exception) {
                 Log.e("ShopScaleNetwork", "Token refresh failed! Error: ${e.message}")
-                tokenManager.clearTokens()
+                runBlocking { tokenManager.clearTokens() }
                 null
             }
         }

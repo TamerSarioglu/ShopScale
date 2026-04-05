@@ -14,6 +14,7 @@ android {
 dependencies {
     //Test
     implementation(project(":core:network"))
+    implementation(project(":feature:product"))
     implementation(libs.bundles.compose)
     implementation(libs.androidx.hilt.navigation.compose)
 }

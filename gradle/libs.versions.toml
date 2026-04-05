@@ -1,6 +1,6 @@
 [versions]
-# --- Android & Kotlin (Senin Temelin) ---
-agp = "9.2.0-alpha06"
+# --- Android & Kotlin ---
+agp = "9.1.0"
 coreKtx = "1.18.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -8,9 +8,9 @@ espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
 kotlin = "2.3.20"
-composeBom = "2026.03.00"
+composeBom = "2026.03.01"
 material3 = "1.4.0"
-composeUi = "1.10.5"
+composeUi = "1.10.6"
 
 # --- ShopScale Architecture Additions ---
 hilt = "2.59.2"

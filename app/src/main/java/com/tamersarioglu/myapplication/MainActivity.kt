@@ -15,9 +15,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.shopscale.core.network.api.ShopScaleAuthApi
 import com.shopscale.core.network.model.dto.LoginRequestDto
+import com.shopscale.feature.product.domain.repository.ProductRepository
 import com.tamersarioglu.myapplication.ui.theme.ShopScaleTheme
 import dagger.hilt.android.AndroidEntryPoint
-import jakarta.inject.Inject
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -26,20 +27,27 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var authApi: ShopScaleAuthApi
 
+    @Inject
+    lateinit var productRepository: ProductRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            try {
-                Log.d("ShopScaleTest", "Sending Test Login Request...")
-                val response = authApi.login(
-                    LoginRequestDto("tamer@test.com", "123456")
-                )
-                Log.d("ShopScaleTest", "Login Success: ${response.accessToken}")
-            } catch (e: Exception) {
-                Log.e("ShopScaleTest", "Request Failed as Expected: ${e.message}")
+            productRepository.getProducts().collect { products ->
+                Log.d("TestOfflineFirst", "Veritabanından gelen ürün sayısı: ${products.size}")
+                if (products.isNotEmpty()) {
+                    Log.d("TestOfflineFirst", "İlk Ürün: ${products.first().title} - $${products.first().price}")
+                }
             }
         }
+
+        lifecycleScope.launch {
+            Log.d("TestOfflineFirst", "İnternetten veri çekme/senkronizasyon başlatılıyor...")
+            productRepository.syncProducts()
+            Log.d("TestOfflineFirst", "Senkronizasyon emri tamamlandı.")
+        }
+
 
         setContent {
             ShopScaleTheme {
