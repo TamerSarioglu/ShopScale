@@ -1,11 +1,13 @@
 package com.shopscale.feature.product.presentation
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shopscale.core.common.mvi.BaseViewModel
 import com.shopscale.feature.product.domain.usecase.GetProductsUseCase
 import com.shopscale.feature.product.domain.usecase.SyncProductsUseCase
+import com.shopscale.feature.product.presentation.contract.ProductEffect
+import com.shopscale.feature.product.presentation.contract.ProductEvent
+import com.shopscale.feature.product.presentation.contract.ProductState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -13,51 +15,44 @@ import javax.inject.Inject
 class ProductViewModel @Inject constructor(
     private val getProductsUseCase: GetProductsUseCase,
     private val syncProductsUseCase: SyncProductsUseCase
-) : ViewModel() {
+) : BaseViewModel<ProductState, ProductEvent, ProductEffect>() {
 
-    private val _state = MutableStateFlow(ProductState())
-    val state: StateFlow<ProductState> = _state.asStateFlow()
-
-    private val _effect = MutableSharedFlow<ProductEffect>()
-    val effect = _effect.asSharedFlow()
+    override fun createInitialState() = ProductState()
 
     init {
         observeProducts()
         onEvent(ProductEvent.OnRefresh)
     }
 
-    fun onEvent(event: ProductEvent) {
+    override fun onEvent(event: ProductEvent) {
         when (event) {
             is ProductEvent.OnRefresh -> syncData()
-            is ProductEvent.OnProductClicked -> {
-                viewModelScope.launch { _effect.emit(ProductEffect.NavigateToDetail(event.productId)) }
-            }
+            is ProductEvent.OnProductClicked -> setEffect(ProductEffect.NavigateToDetail(event.productId))
         }
     }
 
     private fun observeProducts() {
         viewModelScope.launch {
-            getProductsUseCase()
-                .collect { products ->
-                    if (products.isEmpty()) return@collect
+            getProductsUseCase().collect { products ->
+                if (products.isEmpty()) return@collect
 
-                    val shuffled = products.shuffled()
-                    _state.update { currentState ->
-                        currentState.copy(
-                            carouselProducts = shuffled.take(4),
-                            hotDeals = shuffled.drop(4).take(3),
-                            categorizedProducts = shuffled.drop(7).groupBy { it.description.take(10) } // Örnek gruplama
-                        )
-                    }
+                val shuffled = products.shuffled()
+                setState {
+                    copy(
+                        carouselProducts = shuffled.take(4),
+                        hotDeals = shuffled.drop(4).take(3),
+                        categorizedProducts = shuffled.drop(7).groupBy { it.description.take(10) }
+                    )
                 }
+            }
         }
     }
 
     private fun syncData() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            setState { copy(isLoading = true) }
             syncProductsUseCase()
-            _state.update { it.copy(isLoading = false) }
+            setState { copy(isLoading = false) }
         }
     }
 }
