@@ -1,6 +1,7 @@
 plugins {
     id("shopscale.android.application")
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -16,9 +17,11 @@ kotlin {
 }
 
 dependencies {
-    //Test
     implementation(project(":core:network"))
     implementation(project(":feature:product"))
+    implementation(project(":feature:productdetail"))
     implementation(libs.bundles.compose)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 }
