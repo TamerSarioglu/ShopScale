@@ -11,6 +11,10 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(21)
+}
+
 dependencies {
     //Test
     implementation(project(":core:network"))
