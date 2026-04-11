@@ -29,7 +29,7 @@ fun ShopScaleNavHost(
             val route = backStackEntry.toRoute<ProductDetailRoute>()
             ProductDetailScreen(
                 productId = route.productId,
-                onBackClick = { navController.navigateUp() }
+                onNavigateBack = { navController.navigateUp() },
             )
         }
     }

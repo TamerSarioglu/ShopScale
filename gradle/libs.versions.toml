@@ -11,6 +11,7 @@ kotlin = "2.3.20"
 composeBom = "2026.03.01"
 material3 = "1.4.0"
 composeUi = "1.10.6"
+composeIcons = "1.7.8"
 
 # --- ShopScale Architecture Additions ---
 hilt = "2.59.2"
@@ -48,6 +49,7 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "composeUi" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "composeUi" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-compose-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "composeIcons" }
 
 # --- Navigation & Serialization ---
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
@@ -95,7 +97,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 [bundles]
 # --- The Magic Bundles ---
-compose = ["androidx-compose-ui", "androidx-compose-ui-graphics", "androidx-compose-ui-tooling-preview", "androidx-compose-material3", "androidx-activity-compose"]
+compose = ["androidx-compose-ui", "androidx-compose-ui-graphics", "androidx-compose-ui-tooling-preview", "androidx-compose-material3", "androidx-activity-compose", "androidx-compose-icons-extended"]
 compose-debug = ["androidx-compose-ui-tooling", "androidx-compose-ui-test-manifest"]
 network = ["retrofit-core", "retrofit-converter-kotlinx-serialization", "okhttp-logging", "kotlinx-serialization-json"]
 room = ["room-runtime", "room-ktx"]
