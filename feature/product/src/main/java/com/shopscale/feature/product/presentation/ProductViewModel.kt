@@ -4,9 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.shopscale.core.common.mvi.BaseViewModel
 import com.shopscale.feature.product.domain.usecase.GetProductsUseCase
 import com.shopscale.feature.product.domain.usecase.SyncProductsUseCase
-import com.shopscale.feature.product.presentation.contract.ProductEffect
-import com.shopscale.feature.product.presentation.contract.ProductEvent
-import com.shopscale.feature.product.presentation.contract.ProductState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

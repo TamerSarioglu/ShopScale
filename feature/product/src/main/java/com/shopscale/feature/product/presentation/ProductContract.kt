@@ -1,4 +1,4 @@
-package com.shopscale.feature.product.presentation.contract
+package com.shopscale.feature.product.presentation
 
 import com.shopscale.core.common.mvi.UiEffect
 import com.shopscale.core.common.mvi.UiEvent

@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.shopscale.core.network.api.ShopScaleAuthApi
 import com.shopscale.core.network.model.dto.LoginRequestDto
 import com.shopscale.feature.product.domain.repository.ProductRepository
+import com.shopscale.feature.product.presentation.ProductScreen
 import com.tamersarioglu.myapplication.ui.theme.ShopScaleTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -51,7 +52,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ShopScaleTheme {
-                Text(text = "Hello ShopScale! Check Logcat for Network Logs.")
+                ProductScreen { productId ->
+                    Log.d("Navigation", "Ürün Detayına Navigasyon: Product ID = $productId")
+                }
             }
         }
     }
