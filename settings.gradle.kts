@@ -1,4 +1,7 @@
 pluginManagement {
+
+    includeBuild("build-logic")
+
     repositories {
         google {
             content {
@@ -24,3 +27,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "ShopScale"
 include(":app")
+include(":core:network")
+include(":core:datastore")
+include(":core:database")
+include(":core:common")
+include(":feature:product")
+include(":feature:productdetail")
+include(":feature:auth")
+include(":feature:settings")
