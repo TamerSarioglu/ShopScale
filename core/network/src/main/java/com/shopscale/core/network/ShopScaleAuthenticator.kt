@@ -31,7 +31,9 @@ class ShopScaleAuthenticator @Inject constructor(
                 Log.w("ShopScaleNetwork", "401 Unauthorized! Attempting to refresh token...")
 
                 val newTokenResponse = runBlocking {
-                    authApi.get().refreshToken(refreshToken)
+                    authApi.get().refreshToken(
+                        com.shopscale.core.network.model.dto.RefreshTokenRequestDto(refreshToken)
+                    )
                 }
 
                 Log.w(

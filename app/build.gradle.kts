@@ -20,6 +20,8 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":feature:product"))
     implementation(project(":feature:productdetail"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:settings"))
     implementation(libs.bundles.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)

@@ -3,7 +3,9 @@ package com.shopscale.core.network
 import javax.inject.Inject
 import javax.inject.Singleton
 import com.shopscale.core.datastore.ShopScalePreferences
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
 @Singleton
@@ -17,6 +19,8 @@ class TokenManager @Inject constructor(
     fun getRefreshToken(): String? = runBlocking {
         preferences.refreshToken.firstOrNull()
     }
+
+    val isLoggedIn: Flow<Boolean> = preferences.accessToken.map { it != null }
 
     suspend fun saveTokens(access: String, refresh: String) {
         preferences.saveTokens(access, refresh)
