@@ -3,14 +3,7 @@ package com.shopscale.feature.settings.presentation
 import com.shopscale.core.common.mvi.UiEffect
 import com.shopscale.core.common.mvi.UiEvent
 import com.shopscale.core.common.mvi.UiState
-
-data class UserProfile(
-    val id: Int,
-    val email: String,
-    val name: String,
-    val role: String,
-    val avatar: String
-)
+import com.shopscale.feature.settings.domain.model.UserProfile
 
 data class SettingsState(
     val user: UserProfile? = null,

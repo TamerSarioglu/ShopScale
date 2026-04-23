@@ -1,6 +1,9 @@
 package com.shopscale.feature.settings.di
 
 import com.shopscale.feature.settings.data.remote.api.SettingsApi
+import com.shopscale.feature.settings.data.repository.SettingsRepositoryImpl
+import com.shopscale.feature.settings.domain.repository.SettingsRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,7 +13,18 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object SettingsModule {
+abstract class SettingsRepositoryModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindSettingsRepository(
+        impl: SettingsRepositoryImpl
+    ): SettingsRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object SettingsNetworkModule {
 
     @Provides
     @Singleton
