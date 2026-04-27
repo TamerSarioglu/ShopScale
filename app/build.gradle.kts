@@ -12,10 +12,6 @@ android {
     }
 }
 
-kotlin {
-    jvmToolchain(21)
-}
-
 dependencies {
     implementation(project(":core:network"))
     implementation(project(":feature:product"))
