@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.shopscale.feature.auth.presentation.LoginScreen
 import com.shopscale.feature.productdetail.presentation.ProductDetailScreen
+import com.shopscale.feature.register.presentation.RegisterScreen
 
 @Composable
 fun ShopScaleNavHost(
@@ -34,6 +35,20 @@ fun ShopScaleNavHost(
 
         composable<LoginRoute> {
             LoginScreen(
+                onNavigateToMain = {
+                    navController.navigate(MainRoute) {
+                        popUpTo(LoginRoute) { inclusive = true }
+                    }
+                },
+                onNavigateToRegister = {
+                    navController.navigate(RegisterRoute)
+                }
+            )
+        }
+
+        composable<RegisterRoute> {
+            RegisterScreen(
+                onNavigateBack = { navController.navigateUp() },
                 onNavigateToMain = {
                     navController.navigate(MainRoute) {
                         popUpTo(LoginRoute) { inclusive = true }

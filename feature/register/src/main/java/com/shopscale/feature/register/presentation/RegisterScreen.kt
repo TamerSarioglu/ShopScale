@@ -1,11 +1,31 @@
-package com.shopscale.feature.auth.presentation
+package com.shopscale.feature.register.presentation
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,26 +38,38 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
-    viewModel: LoginViewModel = hiltViewModel(),
-    onNavigateToMain: () -> Unit,
-    onNavigateToRegister: () -> Unit
+fun RegisterScreen(
+    viewModel: RegisterViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit,
+    onNavigateToMain: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is LoginEffect.NavigateToMain -> onNavigateToMain()
-                is LoginEffect.ShowError -> {
+                is RegisterEffect.NavigateToMain -> onNavigateToMain()
+                is RegisterEffect.ShowError -> {
                     // Error is already shown in the UI via state
                 }
             }
         }
     }
 
-    Scaffold { paddingValues ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Create Account") },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -57,7 +89,7 @@ fun LoginScreen(
                 )
 
                 Text(
-                    text = "Sign in to your account",
+                    text = "Create your account",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -65,8 +97,21 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
+                    value = state.name,
+                    onValueChange = { viewModel.onEvent(RegisterEvent.OnNameChanged(it)) },
+                    label = { Text("Name") },
+                    leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
                     value = state.email,
-                    onValueChange = { viewModel.onEvent(LoginEvent.OnEmailChanged(it)) },
+                    onValueChange = { viewModel.onEvent(RegisterEvent.OnEmailChanged(it)) },
                     label = { Text("Email") },
                     leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
                     keyboardOptions = KeyboardOptions(
@@ -79,12 +124,25 @@ fun LoginScreen(
 
                 OutlinedTextField(
                     value = state.password,
-                    onValueChange = { viewModel.onEvent(LoginEvent.OnPasswordChanged(it)) },
+                    onValueChange = { viewModel.onEvent(RegisterEvent.OnPasswordChanged(it)) },
                     label = { Text("Password") },
                     leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
+                    value = state.avatar,
+                    onValueChange = { viewModel.onEvent(RegisterEvent.OnAvatarChanged(it)) },
+                    label = { Text("Avatar URL") },
+                    leadingIcon = { Icon(Icons.Default.Image, contentDescription = null) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Uri,
                         imeAction = ImeAction.Done
                     ),
                     singleLine = true,
@@ -101,7 +159,7 @@ fun LoginScreen(
                 }
 
                 Button(
-                    onClick = { viewModel.onEvent(LoginEvent.OnLoginClicked) },
+                    onClick = { viewModel.onEvent(RegisterEvent.OnRegisterClicked) },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !state.isLoading
                 ) {
@@ -112,15 +170,8 @@ fun LoginScreen(
                             strokeWidth = 2.dp
                         )
                     } else {
-                        Text("Sign In")
+                        Text("Create Account")
                     }
-                }
-
-                TextButton(
-                    onClick = onNavigateToRegister,
-                    enabled = !state.isLoading
-                ) {
-                    Text("Create a new account")
                 }
             }
         }
