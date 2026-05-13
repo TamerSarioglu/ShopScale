@@ -2,17 +2,15 @@ package com.shopscale.feature.auth.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.shopscale.core.common.mvi.BaseViewModel
-import com.shopscale.core.network.TokenManager
-import com.shopscale.core.network.api.ShopScaleAuthApi
-import com.shopscale.core.network.model.dto.LoginRequestDto
+import com.shopscale.feature.auth.domain.model.LoginCredentials
+import com.shopscale.feature.auth.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authApi: ShopScaleAuthApi,
-    private val tokenManager: TokenManager
+    private val loginUseCase: LoginUseCase
 ) : BaseViewModel<LoginState, LoginEvent, LoginEffect>() {
 
     override fun createInitialState() = LoginState()
@@ -34,24 +32,19 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             setState { copy(isLoading = true, error = null) }
-            try {
-                val response = authApi.login(
-                    LoginRequestDto(
-                        email = currentState.email,
-                        password = currentState.password
-                    )
+            loginUseCase(
+                LoginCredentials(
+                    email = currentState.email,
+                    password = currentState.password
                 )
-                tokenManager.saveTokens(
-                    access = response.accessToken,
-                    refresh = response.refreshToken
-                )
+            ).onSuccess {
                 setState { copy(isLoading = false) }
                 setEffect(LoginEffect.NavigateToMain)
-            } catch (e: Exception) {
-                setState { copy(isLoading = false, error = e.message ?: "Login failed") }
-                setEffect(LoginEffect.ShowError(e.message ?: "Login failed"))
+            }.onFailure { error ->
+                val message = error.message ?: "Login failed"
+                setState { copy(isLoading = false, error = message) }
+                setEffect(LoginEffect.ShowError(message))
             }
         }
     }
-
 }

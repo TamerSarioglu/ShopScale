@@ -1,0 +1,8 @@
+package com.shopscale.feature.product.domain.model
+
+data class Category(
+    val id: Int,
+    val name: String,
+    val slug: String,
+    val imageUrl: String
+)

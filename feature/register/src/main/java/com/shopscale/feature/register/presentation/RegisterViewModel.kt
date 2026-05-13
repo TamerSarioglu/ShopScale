@@ -2,18 +2,15 @@ package com.shopscale.feature.register.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.shopscale.core.common.mvi.BaseViewModel
-import com.shopscale.core.network.TokenManager
-import com.shopscale.core.network.api.ShopScaleAuthApi
-import com.shopscale.core.network.model.dto.LoginRequestDto
-import com.shopscale.core.network.model.dto.RegisterUserRequestDto
+import com.shopscale.feature.register.domain.model.RegisterUser
+import com.shopscale.feature.register.domain.usecase.RegisterUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val authApi: ShopScaleAuthApi,
-    private val tokenManager: TokenManager
+    private val registerUserUseCase: RegisterUserUseCase
 ) : BaseViewModel<RegisterState, RegisterEvent, RegisterEffect>() {
 
     override fun createInitialState() = RegisterState()
@@ -42,29 +39,18 @@ class RegisterViewModel @Inject constructor(
 
         viewModelScope.launch {
             setState { copy(isLoading = true, error = null) }
-            try {
-                authApi.registerUser(
-                    RegisterUserRequestDto(
-                        name = currentState.name,
-                        email = currentState.email,
-                        password = currentState.password,
-                        avatar = currentState.avatar
-                    )
+            registerUserUseCase(
+                RegisterUser(
+                    name = currentState.name,
+                    email = currentState.email,
+                    password = currentState.password,
+                    avatar = currentState.avatar
                 )
-                val response = authApi.login(
-                    LoginRequestDto(
-                        email = currentState.email,
-                        password = currentState.password
-                    )
-                )
-                tokenManager.saveTokens(
-                    access = response.accessToken,
-                    refresh = response.refreshToken
-                )
+            ).onSuccess {
                 setState { copy(isLoading = false) }
                 setEffect(RegisterEffect.NavigateToMain)
-            } catch (e: Exception) {
-                val message = e.message ?: "Registration failed"
+            }.onFailure { error ->
+                val message = error.message ?: "Registration failed"
                 setState { copy(isLoading = false, error = message) }
                 setEffect(RegisterEffect.ShowError(message))
             }
