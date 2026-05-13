@@ -15,7 +15,4 @@ data object RegisterRoute
 data object MainRoute
 
 @Serializable
-data object ProductListRoute
-
-@Serializable
 data class ProductDetailRoute(val productId: Int)
