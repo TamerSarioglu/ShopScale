@@ -10,13 +10,14 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import com.shopscale.feature.product.presentation.ProductScreen
 import com.shopscale.feature.settings.presentation.SettingsScreen
 import kotlinx.serialization.Serializable
@@ -32,7 +33,8 @@ fun MainScreen(
     onNavigateToProductDetail: (Int) -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
-    val navController = rememberNavController()
+    val tabBackStack = remember { mutableStateListOf<Any>(ProductListTab) }
+    val currentTab = tabBackStack.lastOrNull() ?: ProductListTab
 
     val topLevelRoutes = listOf(
         TopLevelRoute("Products", ProductListTab, Icons.Default.Home),
@@ -42,21 +44,15 @@ fun MainScreen(
     Scaffold(
         bottomBar = {
             NavigationBar {
-                val navBackStackEntry = navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry.value?.destination
-
                 topLevelRoutes.forEach { topLevelRoute ->
                     NavigationBarItem(
                         icon = { Icon(topLevelRoute.icon, contentDescription = topLevelRoute.name) },
                         label = { Text(topLevelRoute.name) },
-                        selected = currentDestination?.hasRoute(topLevelRoute.route::class) == true,
+                        selected = currentTab::class == topLevelRoute.route::class,
                         onClick = {
-                            navController.navigate(topLevelRoute.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
+                            if (currentTab != topLevelRoute.route) {
+                                tabBackStack.clear()
+                                tabBackStack.add(topLevelRoute.route)
                             }
                         }
                     )
@@ -64,22 +60,27 @@ fun MainScreen(
             }
         }
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = ProductListTab,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable<ProductListTab> {
-                ProductScreen(
-                    onNavigateToDetail = onNavigateToProductDetail
-                )
+        NavDisplay(
+            backStack = tabBackStack,
+            onBack = { /* Root container handles exit/back pressed behavior */ },
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator()
+            ),
+            modifier = Modifier.padding(innerPadding),
+            entryProvider = entryProvider {
+                entry<ProductListTab> {
+                    ProductScreen(
+                        onNavigateToDetail = onNavigateToProductDetail
+                    )
+                }
+                entry<SettingsTab> {
+                    SettingsScreen(
+                        onNavigateToLogin = onNavigateToLogin
+                    )
+                }
             }
-            composable<SettingsTab> {
-                SettingsScreen(
-                    onNavigateToLogin = onNavigateToLogin
-                )
-            }
-        }
+        )
     }
 }
 

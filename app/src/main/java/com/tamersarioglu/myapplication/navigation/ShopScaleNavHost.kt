@@ -1,81 +1,86 @@
 package com.tamersarioglu.myapplication.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import com.shopscale.feature.auth.presentation.LoginScreen
 import com.shopscale.feature.productdetail.presentation.ProductDetailScreen
 import com.shopscale.feature.register.presentation.RegisterScreen
 
 @Composable
-fun ShopScaleNavHost(
-    navController: NavHostController = rememberNavController()
-) {
-    NavHost(
-        navController = navController,
-        startDestination = SplashRoute
-    ) {
-        composable<SplashRoute> {
-            SplashScreen(
-                onNavigateToLogin = {
-                    navController.navigate(LoginRoute) {
-                        popUpTo(SplashRoute) { inclusive = true }
-                    }
-                },
-                onNavigateToMain = {
-                    navController.navigate(MainRoute) {
-                        popUpTo(SplashRoute) { inclusive = true }
-                    }
-                }
-            )
-        }
+fun ShopScaleNavHost() {
+    val backStack = remember { mutableStateListOf<Any>(SplashRoute) }
 
-        composable<LoginRoute> {
-            LoginScreen(
-                onNavigateToMain = {
-                    navController.navigate(MainRoute) {
-                        popUpTo(LoginRoute) { inclusive = true }
+    NavDisplay(
+        backStack = backStack,
+        onBack = { if (backStack.size > 1) backStack.removeLast() },
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
+        entryProvider = entryProvider {
+            entry<SplashRoute> {
+                SplashScreen(
+                    onNavigateToLogin = {
+                        backStack.clear()
+                        backStack.add(LoginRoute)
+                    },
+                    onNavigateToMain = {
+                        backStack.clear()
+                        backStack.add(MainRoute)
                     }
-                },
-                onNavigateToRegister = {
-                    navController.navigate(RegisterRoute)
-                }
-            )
-        }
+                )
+            }
 
-        composable<RegisterRoute> {
-            RegisterScreen(
-                onNavigateBack = { navController.navigateUp() },
-                onNavigateToMain = {
-                    navController.navigate(MainRoute) {
-                        popUpTo(LoginRoute) { inclusive = true }
+            entry<LoginRoute> {
+                LoginScreen(
+                    onNavigateToMain = {
+                        backStack.clear()
+                        backStack.add(MainRoute)
+                    },
+                    onNavigateToRegister = {
+                        backStack.add(RegisterRoute)
                     }
-                }
-            )
-        }
+                )
+            }
 
-        composable<MainRoute> {
-            MainScreen(
-                onNavigateToProductDetail = { productId ->
-                    navController.navigate(ProductDetailRoute(productId))
-                },
-                onNavigateToLogin = {
-                    navController.navigate(LoginRoute) {
-                        popUpTo(MainRoute) { inclusive = true }
+            entry<RegisterRoute> {
+                RegisterScreen(
+                    onNavigateBack = {
+                        if (backStack.size > 1) backStack.removeLast()
+                    },
+                    onNavigateToMain = {
+                        backStack.clear()
+                        backStack.add(MainRoute)
                     }
-                }
-            )
-        }
+                )
+            }
 
-        composable<ProductDetailRoute> { backStackEntry ->
-            val route = backStackEntry.toRoute<ProductDetailRoute>()
-            ProductDetailScreen(
-                productId = route.productId,
-                onNavigateBack = { navController.navigateUp() }
-            )
+            entry<MainRoute> {
+                MainScreen(
+                    onNavigateToProductDetail = { productId ->
+                        backStack.add(ProductDetailRoute(productId))
+                    },
+                    onNavigateToLogin = {
+                        backStack.clear()
+                        backStack.add(LoginRoute)
+                    }
+                )
+            }
+
+            entry<ProductDetailRoute> { route ->
+                ProductDetailScreen(
+                    productId = route.productId,
+                    onNavigateBack = {
+                        if (backStack.size > 1) backStack.removeLast()
+                    }
+                )
+            }
         }
-    }
+    )
 }
